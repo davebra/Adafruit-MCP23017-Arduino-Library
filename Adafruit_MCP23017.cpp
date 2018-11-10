@@ -102,13 +102,17 @@ void Adafruit_MCP23017::updateRegisterBit(uint8_t pin, uint8_t pValue, uint8_t p
 /**
  * Initializes the MCP23017 given its HW selected address, see datasheet for Address selection.
  */
-void Adafruit_MCP23017::begin(uint8_t addr) {
+void Adafruit_MCP23017::begin(uint8_t addr, uint8_t sda, uint8_t scl) {
 	if (addr > 7) {
 		addr = 7;
 	}
 	i2caddr = addr;
 
-	Wire.begin();
+	if (sda > -1 && scl > -1){
+		Wire.begin(sda, scl);
+	} else {
+		Wire.begin();
+	}
 
 	// set defaults!
 	// all inputs on port A and B
@@ -120,7 +124,14 @@ void Adafruit_MCP23017::begin(uint8_t addr) {
  * Initializes the default MCP23017, with 000 for the configurable part of the address
  */
 void Adafruit_MCP23017::begin(void) {
-	begin(0);
+	begin(0, -1, -1);
+}
+
+/**
+ * Initializes the default MCP23017, with 000 for the configurable part of the address
+ */
+void Adafruit_MCP23017::begin(uint8_t sda, uint8_t scl) {
+	begin(0, sda, scl);
 }
 
 /**
